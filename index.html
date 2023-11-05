@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OnlineLibraryManagementSystem|ShahidUllah</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        margin: 5px;
+        padding: 3px;
+      }
+
+      h1 {
+        text-align: center;
+        padding: 80px;
+        background-image: url("olms-image-02.jpg");
+        background-size: cover;
+        color: #ffffff;
+      }
+      h3 {
+        text-align: center;
+      }
+
+      .container {
+        background-color: #bbb7b7;
+        padding: 20px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc; /* Add border */
+      }
+
+      input[type="text"]:focus {
+        border: 2px solid #0400ff; /* Change border color on focus */
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #0400ff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #ffffff;
+        border: 1px solid #0400ff; /* Change border color on hover */
+      }
+
+      .footer {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+        margin-top: 15px;
+      }
+
+      #list li {
+        list-style-type: none;
+        border: 1px solid #ccc; /* Add border */
+        padding: 4px;
+        margin-bottom: 4px;
+        cursor: pointer;
+      }
+
+      /*adding hover effects to the book-list items*/
+
+      #list li:hover {
+        background-color: #ded5d5;
+        border: 1.5px solid #007bff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Online Library Management System | OLMS</h1>
+    <section>
+      <div class="container py-lg-5">
+        <div class="row">
+          <div class="col-md-4">
+            <h3>Book List</h3>
+            <ul id="list"></ul>
+          </div>
+          <div class="col-md-4">
+            <h3>Add New Book</h3>
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Title"
+                id="title"
+                aria-label="Title"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Author"
+                id="author"
+                aria-label="Author"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="ISBN"
+                id="isbn"
+                aria-label="ISBN"
+              />
+            </div>
+            <button type="button" class="btn btn-primary" id="addbook">
+              Add Book
+            </button>
+          </div>
+          <div class="col-md-4">
+            <h3>Search Book</h3>
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search Book"
+                aria-label="Search Book"
+                id="searchBook"
+              />
+            </div>
+            <button type="button" class="btn btn-primary" id="findbook">
+              Search
+            </button>
+            <ul>
+              <li type="none" id="showBook"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <h3>Connect with Us</h3>
+      <ul class="list-unstyled">
+        <li><a href="#">Facebook</a></li>
+        <li><a href="#">Twitter</a></li>
+        <li><a href="#">Instagram</a></li>
+      </ul>
+      &copy; 2023 Online Library Management System
+    </div>
+    <script>
+      let libraryArray = [];
+
+      // Function to create a book object and add it to the array
+      function createBookObject(title, author, isbn) {
+        const book = {
+          title: title,
+          author: author,
+          isbn: isbn,
+        };
+
+        libraryArray.push(book);
+        console.log(libraryArray);
+      }
+
+      // Function to check if a book with the given ISBN already exists
+      function isBookDuplicate(isbn) {
+        for (let i = 0; i < libraryArray.length; i++) {
+          if (libraryArray[i].isbn === isbn) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // Function to show a book information
+      function displayBookInfo() {
+        const searchBook = document.getElementById("searchBook").value;
+        let bookInfo = "Book not found";
+        for (let i = 0; i < libraryArray.length; i++) {
+          if (libraryArray[i].title === searchBook) {
+            bookInfo = `${libraryArray[i].title} by ${libraryArray[i].author} ISBN: ${libraryArray[i].isbn}`;
+            break;
+          }
+        }
+        document.getElementById("showBook").innerText = bookInfo;
+      }
+
+      // Function to add a list item for a new book
+      function addBookToList(book, isbn) {
+        if (!isBookDuplicate(isbn)) {
+          const list = document.getElementById("list");
+          const li = document.createElement("li");
+          li.innerText = book;
+          list.appendChild(li);
+        } else {
+          alert("Book already exists");
+        }
+      }
+
+      // Function to handle the Add-Book button click event
+      function handleAddBookClick() {
+        const title = document.getElementById("title").value;
+        const author = document.getElementById("author").value;
+        const isbn = document.getElementById("isbn").value;
+
+        const book = `${title} by ${author} ISBN: ${isbn}`;
+        addBookToList(book, isbn);
+        createBookObject(title, author, isbn);
+
+        // Clear input fields after adding a book
+        document.getElementById("title").value = "";
+        document.getElementById("author").value = "";
+        document.getElementById("isbn").value = "";
+      }
+
+      const addBookButton = document.getElementById("addbook");
+      addBookButton.addEventListener("click", handleAddBookClick);
+
+      const findBookButton = document.getElementById("findbook");
+      findBookButton.addEventListener("click", displayBookInfo);
+    </script>
+  </body>
+</html>
